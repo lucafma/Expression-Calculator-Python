@@ -3,6 +3,8 @@ import math
 from re import sub
 #from functools import reduce
 
+menu = "+----------------------------------------------------------------------+\n| Tabela de operadores:\n| +     -> Soma\n| -     -> Subtração\n| *     -> Multiplicação\n| /     -> Divisão\n| %     -> Mod\n| ^     -> Exponênciação\n| !     -> Fatorial\n| #     -> Modulo\n| log   -> LogBase (X)\n| sin|h -> Seno / Seno Hiperbólico\n| cos|h -> Cosseno / Cosseno Hiperbólico\n| tan|h -> Tangente / Tangente Hiperbólica\n| deg   -> Converte de RADIANOS para GRAUS\n| rad   -> Converte de GRAUS para RADIANOS\n| e     -> Constante e\n| pi    -> Constante pi\n| =     -> Teste de Igualdade\n| <     -> Menor Que\n| >     -> Maior Que\n|\n| menu  -> Mostra Menu"
+
 def calculate(string):
 	ops, stack = {
 		"e": math.e,
@@ -61,7 +63,7 @@ def calculate(string):
 
 def parser(string):
 	string = sub(r'([-()+*/^=<>%#~!])(?=)', r' \1 ', string)
-	string = sub(r'(log|sinh?|cosh?|tanh?|pi|e|rad|deg)(?=)', r' \1 ', string)
+	string = sub(r'(log|sinh?|cosh?|tanh?|pi|e|rad|deg|menu)(?=)', r' \1 ', string)
 	ops = {
 		"+": {"prec" : 2, "assoc": 'L'},
 		"-": {"prec" : 2, "assoc": 'L'},
@@ -87,6 +89,9 @@ def parser(string):
 		"sinh": {"prec" : 6, "assoc": "L"},
 		"tanh": {"prec" : 6, "assoc": "L"},
 	}
+	if "menu" in string:
+		print(menu)
+		return "Menu", 2
 	stack, output = [], []
 	for i in string.split():
 		if i.isalpha() and (i not in ["log", "e", "cos", "sin", "tan", "cosh", "sinh","tanh","pi","rad","deg"]):
@@ -133,8 +138,8 @@ def reverse(string):
 		else:
 			rvr_str.append(i)
 	return ' '.join(rvr_str)
-		
-print("+----------------------------------------------------------------------+\n| Tabela de operadores:\n| +     -> Soma\n| -     -> Subtração\n| *     -> Multiplicação\n| /     -> Divisão\n| %     -> Mod\n| ^     -> Exponênciação\n| !     -> Fatorial\n| #     -> Modulo\n| log   -> LogBase (X)\n| sin|h -> Seno / Seno Hiperbólico\n| cos|h -> Cosseno / Cosseno Hiperbólico\n| tan|h -> Tangente / Tangente Hiperbólica\n| deg   -> Converte de RADIANOS para GRAUS\n| rad   -> Converte de GRAUS para RADIANOS\n| e     -> Constante e\n| pi    -> Constante pi\n| =     -> Teste de Igualdade\n| <     -> Menor Que\n| >     -> Maior Que")
+
+print(menu)
 
 while 1:
 	x = input("+----------------------------------------------------------------------+\n| Entre com uma expressão matemática: ")
@@ -155,9 +160,9 @@ while 1:
 	
 	#print("Resposta: {}".format(calc.calc_post(calc.parser(x)[0])))
 	
-	if status:
+	if status == 1:
 		resp = eq
-	else:
+	elif status == 0:
 		resp = calculate(eq)
-	print("|\n| Resposta: {}\n+----------------------------------------------------------------------+\n".format(resp))
+		print("|\n| Resposta: {}\n+----------------------------------------------------------------------+\n".format(resp))
 		
